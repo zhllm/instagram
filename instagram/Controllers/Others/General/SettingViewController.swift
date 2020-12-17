@@ -5,6 +5,7 @@
 //  Created by 张杰 on 2020/12/16.
 //
 
+import SafariServices
 import UIKit
 
 struct SettingModel {
@@ -14,7 +15,7 @@ struct SettingModel {
 
 /// ViewController to show User setting
 final class SettingViewController: UIViewController {
-
+    
     private let talbeView: UITableView = {
         let table = UITableView(
             frame: .zero,
@@ -42,14 +43,65 @@ final class SettingViewController: UIViewController {
     }
     
     private func configureModels() {
-        let section = [
+        data.append([
+            SettingModel(title: "Edit Profile") {[weak self] in
+                guard let weakSelf = self else {
+                    return
+                }
+                weakSelf.didTapEditProfile()
+            },
+            SettingModel(title: "Invite Friends") {[weak self] in
+                guard let weakSelf = self else {
+                    return
+                }
+                weakSelf.didTapInviteFriends()
+            },
+            SettingModel(title: "Save Original Posts") {[weak self] in
+                guard let weakSelf = self else {
+                    return
+                }
+                weakSelf.didTapSaveOriginalPosts();
+            }
+        ])
+        
+        data.append([
+            SettingModel(title: "Terms of Service") {[weak self] in
+                guard let weakSelf = self else {
+                    return
+                }
+                weakSelf.openURL(type: .terms)
+            },
+            SettingModel(title: "Privacy Policy") {[weak self] in
+                guard let weakSelf = self else {
+                    return
+                }
+                weakSelf.openURL(type: .privacy)
+            },
+            SettingModel(title: "Help / Feedback") {[weak self] in
+                guard let weakSelf = self else {
+                    return
+                }
+                weakSelf.openURL(type: .help)
+            },
+        ])
+        
+        data.append([
             SettingModel(title: "Log out") {[weak self] in
                 self?.didTapLoginout()
             }
-        ]
-        data.append(section)
+        ])
+    }
+}
+
+
+// MRK: - setting button callback
+extension SettingViewController{
+    
+    enum SettingURLType {
+        case terms, privacy, help
     }
     
+    // layout button to user lay out
     func didTapLoginout() {
         let actionSheet = UIAlertController(title: "Log out",
                                             message: "Are you sure you want to log out?",
@@ -82,6 +134,37 @@ final class SettingViewController: UIViewController {
         actionSheet.popoverPresentationController?.sourceRect = talbeView.bounds
         present(actionSheet, animated: true, completion: nil)
     }
+    
+    func didTapEditProfile () {
+        let vc = EditProfileViewController()
+        vc.title = "Edit Profile"
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.modalPresentationStyle = .fullScreen
+        present(navVC, animated: true, completion: nil)
+    }
+    
+    func didTapInviteFriends() {
+        // share show sheet to invite friends
+    }
+    
+    func didTapSaveOriginalPosts() {
+        
+    }
+    
+    func openURL(type: SettingURLType) {
+        let urlString: String
+        switch type {
+        case .help: urlString = "https://help.instagram.com/"
+        case .privacy: urlString = "https://help.instagram.com/519522125107875"
+        case .terms: urlString = "https://www.facebook.com/help/instagram/termsofuse"
+        }
+        
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        let vc = SFSafariViewController(url: url)
+        present(vc, animated: true, completion: nil)
+    }
 }
 
 
@@ -98,6 +181,8 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = talbeView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = data[indexPath.section][indexPath.row].title
+        // 右侧有个向右的箭头
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
     
