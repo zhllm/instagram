@@ -57,5 +57,17 @@ public class AuthManager {
             print(username)
         }
     }
+    
+    public func logout(completion: @escaping (Bool) -> ()) {
+        do {
+            try Auth.auth().signOut()
+            completion(true)
+            return
+        } catch let error {
+            completion(false)
+            print("------log out error ------- \(error)")
+            return
+        }
+    }
 }
 

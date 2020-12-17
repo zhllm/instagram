@@ -196,6 +196,7 @@
 		2F9B1321258A2BF900DC55CC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2FFB6564258BA39D0067AFB1 /* Cells */,
 				2F9B1327258A2C6000DC55CC /* Storybord */,
 				2F9B12F6258A2BA500DC55CC /* Assets.xcassets */,
 			);
@@ -283,6 +284,13 @@
 				2FFB655F258B7EA30067AFB1 /* String+Extensions.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		2FFB6564258BA39D0067AFB1 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		46DD86C4E21C2BAF026F6EE7 /* Frameworks */ = {
