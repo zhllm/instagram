@@ -29,18 +29,19 @@ public class DatabaseManager {
     ///   - email: String representing email
     ///   - username: String representing username
     public func insertNewUser(with email: String, username: String, complete: @escaping (Bool) -> ()) {
-        database.child(email).setValue(["username":username]) { (error, _) in
+        database.child(email.safaDatabaseKey()).setValue(["username":username]) { (error, _) in
             if error == nil {
                 complete(true)
                 return
             }else {
+                print("------------insert database error------------")
                 complete(false)
                 return
             }
         }
     }
     
-    private func safeKey() {
-        
-    }
+//    private func safeKey() {
+//        
+//    }
 }

@@ -22,6 +22,7 @@ public class AuthManager {
                 // - insert account to database
                 Auth.auth().createUser(withEmail: email, password: password) { (authResult, error) in
                     guard error == nil, authResult != nil else {
+                        print("-------------createUser error:------------- \(String(describing: error))")
                         complete(false)
                         return
                     }

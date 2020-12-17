@@ -23,6 +23,11 @@ class HomeViewController: UIViewController {
     }
     
     private func handleNotAuthenticated() {
+        do {
+            try Auth.auth().signOut()
+        } catch {
+            print("faild sign out")
+        }
         // check auth status
         if Auth.auth().currentUser == nil {
             // show login

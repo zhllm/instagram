@@ -47,7 +47,7 @@ class RegistrationViewController: UIViewController {
     
     private let passwordField: UITextField = {
         let textFiled = UITextField()
-        textFiled.placeholder = "Username...."
+        textFiled.placeholder = "password...."
         textFiled.returnKeyType = .next
         textFiled.leftViewMode = .always
         textFiled.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
@@ -103,7 +103,7 @@ class RegistrationViewController: UIViewController {
               let email = emailField.text, !email.isEmpty else {
             return
         }
-        
+        print("\(password) \(username) \(email)")
         AuthManager.shared.registerUser(username: username, email: email, password: password) { (success) in
             DispatchQueue.main.async {
                 if success {
