@@ -7,7 +7,8 @@ target 'instagram' do
   
   pod 'SnapKit'
   # Pods for instagram
-  pod 'Appirater' 
+  pod 'Appirater'
+  pod 'SDWebImage', :git => 'https://github.com.cnpmjs.org/SDWebImage/SDWebImage.git'
   #firebase
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
