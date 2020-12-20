@@ -96,11 +96,10 @@ extension ProfileViewController: UICollectionViewDataSource,
         collectionView.deselectItem(at: indexPath, animated: true)
         // let model = userPost[indexPath.row]
         // get the model and open post controller
-        let vc = PostViewController(model: nil)
+        let vc = PostViewController(model: userPost[indexPath.row])
         vc.title = "Post"
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -183,6 +182,9 @@ extension ProfileViewController: ProfileHeaderCollectionReusableViewDelegate {
 extension ProfileViewController: ProfileTabsCollectionReusableViewDelegate {
     func didTapGridButton() {
         // Reload collection view with data
+//        let vc = PostViewController(model: userPost[0])
+//        vc.title = "Post"
+        
     }
     
     func didTapTaggButton() {
