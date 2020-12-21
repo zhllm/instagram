@@ -40,7 +40,7 @@ class PostViewController: UIViewController {
     
     
     
-    init(model: UserPost) {
+    init(model: UserPost?) {
         super.init(nibName: nil, bundle: nil)
         self.model = model
         configureModels()

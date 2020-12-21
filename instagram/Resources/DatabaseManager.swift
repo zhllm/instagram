@@ -34,7 +34,6 @@ public class DatabaseManager {
                 complete(true)
                 return
             }else {
-                print("------------insert database error------------")
                 complete(false)
                 return
             }

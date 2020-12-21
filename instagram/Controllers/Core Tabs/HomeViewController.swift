@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseAuth
 
+
 struct HomeFeedRenderViewType {
     let header: PostRenderViewModel
     let post: PostRenderViewModel
@@ -53,7 +54,7 @@ class HomeViewController: UIViewController {
     }
     
     private func createMockModels() {
-        let user = User(username: "", bio: "", name: (first: "String", last: "String"), birthDate: Date(), gender: .female, counts: UserCount(followers: 0, following: 0, posts: 0), profilePhoto: URL(string: "https://www.google.com")!, joinDate: Date())
+        let user = User(username: "user", bio: "", name: (first: "String", last: "String"), birthDate: Date(), gender: .female, counts: UserCount(followers: 0, following: 0, posts: 0), profilePhoto: URL(string: "https://www.google.com")!, joinDate: Date())
         let post = UserPost(
             identifier: "",
             postType: .photo,
@@ -143,7 +144,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             let position = x % 4 == 0 ? x / 4 : (x - ( x % 4)) / 4
             model = feedRenderModels[position]
-            print(model)
         }
         
         let subSection = x % 4
@@ -158,20 +158,21 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                     withIdentifier: ZLFeedPostHeaderTableViewCell.identifier,
                     for: indexPath
                 ) as! ZLFeedPostHeaderTableViewCell
+                cell.configure(with: user)
+                cell.delegate = self
                 return cell
             case .actions, .comments, .primaryCount: return UITableViewCell()
             }
             
         } else if subSection == 1 {
             // post
-            let postModel = model.post
-           
-            switch postModel.renderType {
+            switch model.post.renderType {
             case .primaryCount(let post):
                 let cell = tableView.dequeueReusableCell(
-                    withIdentifier: ZLFeedPostGenaeralTableViewCell.identifier,
+                    withIdentifier: ZLFeedPostTableViewCell.identifier,
                     for: indexPath
-                ) as! ZLFeedPostGenaeralTableViewCell
+                ) as! ZLFeedPostTableViewCell
+                cell.configure(with: post)
                 return cell
             case .actions, .comments, .header: return UITableViewCell()
             }
@@ -187,6 +188,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                     withIdentifier: ZLFeedPostActionsTableViewCell.identifier,
                     for: indexPath
                 ) as! ZLFeedPostActionsTableViewCell
+                cell.delegate = self
                 return cell
             case .primaryCount, .comments, .header: return UITableViewCell()
             }
@@ -197,9 +199,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             switch commentsModel.renderType {
             case .comments(let comments):
                 let cell = tableView.dequeueReusableCell(
-                    withIdentifier: ZLFeedPostTableViewCell.identifier,
+                    withIdentifier: ZLFeedPostGenaeralTableViewCell.identifier,
                     for: indexPath
-                ) as! ZLFeedPostTableViewCell
+                ) as! ZLFeedPostGenaeralTableViewCell
                 return cell
             case .primaryCount, .actions, .header: return UITableViewCell()
             }
@@ -232,7 +234,46 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
     }
+}
+
+extension HomeViewController: ZLFeedPostHeaderTableViewCellDelegate {
+    func didTapMoreButton() {
+        let actionSheet = UIAlertController(title: "Post options",
+                                            message: nil,
+                                            preferredStyle: .actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Cancel",
+                                            style: .cancel,
+                                            handler: nil))
+        actionSheet.addAction(UIAlertAction(
+            title: "Report Post",
+            style: .destructive,
+            handler: { [weak self] (_) in
+                guard let weakSlef = self else {
+                    return
+                }
+                weakSlef.reportPost()
+            }
+        ))
+        present(actionSheet, animated: true, completion: nil)
+    }
     
+    func reportPost() {
+        
+    }
+}
+
+extension HomeViewController: ZLFeedPostActionsTableViewCellDelegate {
+    func didTapLikeButton() {
+        
+    }
+    
+    func didTapCommentButton() {
+        
+    }
+    
+    func didTapSendButton() {
+        
+    }
     
     
 }

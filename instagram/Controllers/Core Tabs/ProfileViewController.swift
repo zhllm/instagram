@@ -43,7 +43,6 @@ final class ProfileViewController: UIViewController {
         
         collectionView.delegate = self
         collectionView.dataSource = self
-        
         view.addSubview(collectionView)
     }
     
@@ -96,8 +95,30 @@ extension ProfileViewController: UICollectionViewDataSource,
         collectionView.deselectItem(at: indexPath, animated: true)
         // let model = userPost[indexPath.row]
         // get the model and open post controller
-        let vc = PostViewController(model: userPost[indexPath.row])
-        vc.title = "Post"
+        
+        let user = User(
+            username: "",
+            bio: "",
+            name: (first: "String", last: "String"),
+            birthDate: Date(),
+            gender: .female,
+            counts: UserCount(followers: 0, following: 0, posts: 0), profilePhoto: URL(string: "https://www.google.com")!,
+            joinDate: Date()
+        )
+        let post = UserPost(
+            identifier: "",
+            postType: .photo,
+            thumbnailImage: URL(string:"https://www.google.com")!,
+            postURL: URL(string: "https://www.google.com")!,
+            caption: nil,
+            likeCount: [],
+            comments: [],
+            createDate: Date(),
+            taggeUsers: [],
+            owner: user
+        )
+        let vc = PostViewController(model: post) // userPost[indexPath.row]
+        vc.title = post.postType.rawValue
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
     }
