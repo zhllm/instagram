@@ -16,6 +16,12 @@ target 'instagram' do
   pod 'Firebase/Crashlytics'
   pod 'Firebase/Analytics'
   pod 'Firebase/Storage'
+  pod 'Alamofire', :git => 'https://github.com.cnpmjs.org/Alamofire/Alamofire.git'
+  pod 'SwiftyJSON'
+  pod 'ObjectMapper'
+  pod 'MBProgressHUD'
+  pod 'PromiseKit'
+  pod 'MJRefresh'
   
   target 'instagramTests' do
     inherit! :search_paths

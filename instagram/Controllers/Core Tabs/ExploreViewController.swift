@@ -36,6 +36,17 @@ class ExploreViewController: UIViewController {
         configureExploreCollection()
         configureSearchBar()
         configureDimendView()
+        UIView.animate(withDuration: 1) { [weak self] in
+            guard let weakSelf = self else {
+                return
+            }
+            weakSelf.navigationController?.view.frame = CGRect(
+                x: 0,
+                y: CGFloat(-20), // weakSelf.navigationController!.view.height
+                width: weakSelf.navigationController!.view.width,
+                height: weakSelf.navigationController!.view.height
+            )
+        }
     }
     
     private func configureTabbedSearch() {

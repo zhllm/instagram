@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (5.4.1)
   - Appirater (2.3.1)
   - Firebase/Analytics (7.3.0):
     - Firebase/Core
@@ -88,18 +89,32 @@ PODS:
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (1.5.0)
   - leveldb-library (1.22)
+  - MBProgressHUD (1.2.0)
+  - MJRefresh (3.5.0)
   - nanopb (2.30906.0):
     - nanopb/decode (= 2.30906.0)
     - nanopb/encode (= 2.30906.0)
   - nanopb/decode (2.30906.0)
   - nanopb/encode (2.30906.0)
-  - PromisesObjC (1.2.11)
-  - SDWebImage (5.10.0):
-    - SDWebImage/Core (= 5.10.0)
-  - SDWebImage/Core (5.10.0)
+  - ObjectMapper (4.2.0)
+  - PromiseKit (6.13.1):
+    - PromiseKit/CorePromise (= 6.13.1)
+    - PromiseKit/Foundation (= 6.13.1)
+    - PromiseKit/UIKit (= 6.13.1)
+  - PromiseKit/CorePromise (6.13.1)
+  - PromiseKit/Foundation (6.13.1):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (6.13.1):
+    - PromiseKit/CorePromise
+  - PromisesObjC (1.2.12)
+  - SDWebImage (5.10.2):
+    - SDWebImage/Core (= 5.10.2)
+  - SDWebImage/Core (5.10.2)
   - SnapKit (5.0.1)
+  - SwiftyJSON (5.0.0)
 
 DEPENDENCIES:
+  - Alamofire (from `https://github.com.cnpmjs.org/Alamofire/Alamofire.git`)
   - Appirater
   - Firebase/Analytics
   - Firebase/Auth
@@ -107,8 +122,13 @@ DEPENDENCIES:
   - Firebase/Crashlytics
   - Firebase/Database
   - Firebase/Storage
+  - MBProgressHUD
+  - MJRefresh
+  - ObjectMapper
+  - PromiseKit
   - SDWebImage (from `https://github.com.cnpmjs.org/SDWebImage/SDWebImage.git`)
   - SnapKit
+  - SwiftyJSON
 
 SPEC REPOS:
   trunk:
@@ -127,20 +147,31 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMSessionFetcher
     - leveldb-library
+    - MBProgressHUD
+    - MJRefresh
     - nanopb
+    - ObjectMapper
+    - PromiseKit
     - PromisesObjC
     - SnapKit
+    - SwiftyJSON
 
 EXTERNAL SOURCES:
+  Alamofire:
+    :git: https://github.com.cnpmjs.org/Alamofire/Alamofire.git
   SDWebImage:
     :git: https://github.com.cnpmjs.org/SDWebImage/SDWebImage.git
 
 CHECKOUT OPTIONS:
+  Alamofire:
+    :commit: eaf6e622dd41b07b251d8f01752eab31bc811493
+    :git: https://github.com.cnpmjs.org/Alamofire/Alamofire.git
   SDWebImage:
-    :commit: 68a6f83607e4ca361b1167b769045917804a1cbd
+    :commit: 564d238f8814c4a82502336fd80b28a9d321ff47
     :git: https://github.com.cnpmjs.org/SDWebImage/SDWebImage.git
 
 SPEC CHECKSUMS:
+  Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
   Appirater: 44a4651f7912a17dc906b655f0c215d5bb768b84
   Firebase: 26223c695fe322633274198cb19dca8cb7e54416
   FirebaseAnalytics: 2580c2d62535ae7b644143d48941fcc239ea897a
@@ -156,11 +187,16 @@ SPEC CHECKSUMS:
   GoogleUtilities: 3dc4ff0d5e4840e2fa8eef0889620e8c33d4218c
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
+  MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
+  MJRefresh: 6afc955813966afb08305477dd7a0d9ad5e79a16
   nanopb: 1bf24dd71191072e120b83dd02d08f3da0d65e53
-  PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
-  SDWebImage: 9169792e9eec3e45bba2a0c02f74bf8bd922d1ee
+  ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
+  PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
+  PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
+  SDWebImage: b969dcfc02c40a5da71eac0b03b8f1a0c794a86f
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
 
-PODFILE CHECKSUM: 1b8c6f5b057eb68582003d463a54924c54ecd317
+PODFILE CHECKSUM: 40c696b9577d0248c2ced5ab9866d3e8c8400266
 
 COCOAPODS: 1.9.1

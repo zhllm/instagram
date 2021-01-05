@@ -25,10 +25,10 @@
             </objects>
             <point key="canvasLocation" x="-2155" y="-210"/>
         </scene>
-        <!--Home View Controller-->
+        <!--Camera View Controller-->
         <scene sceneID="IO9-fO-f16">
             <objects>
-                <viewController id="dBV-NG-g2N" customClass="HomeViewController" customModule="instagram" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="dBV-NG-g2N" customClass="CameraViewController" customModule="instagram" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sFd-uB-CAs">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

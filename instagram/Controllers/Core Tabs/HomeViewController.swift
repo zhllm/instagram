@@ -6,274 +6,117 @@
 //
 
 import UIKit
-import FirebaseAuth
-
-
-struct HomeFeedRenderViewType {
-    let header: PostRenderViewModel
-    let post: PostRenderViewModel
-    let comments: PostRenderViewModel
-    let actions: PostRenderViewModel
-}
+import SnapKit
+import MBProgressHUD
+import MJRefresh
 
 class HomeViewController: UIViewController {
     
-    private var feedRenderModels = [HomeFeedRenderViewType]()
+    private var collectionView: UICollectionView?
+    private var models: [Post] = []
+    private var page: Int = 1
+    private var pageSize: Int = 20
     
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(ZLFeedPostTableViewCell.self,
-                           forCellReuseIdentifier: ZLFeedPostTableViewCell.identifier)
-        tableView.register(ZLFeedPostHeaderTableViewCell.self,
-                           forCellReuseIdentifier: ZLFeedPostHeaderTableViewCell.identifier)
-        tableView.register(ZLFeedPostActionsTableViewCell.self,
-                           forCellReuseIdentifier: ZLFeedPostActionsTableViewCell.identifier)
-        tableView.register(ZLFeedPostGenaeralTableViewCell.self,
-                           forCellReuseIdentifier: ZLFeedPostGenaeralTableViewCell.identifier)
-        
-        return tableView
-    }()
+    // 顶部刷新
+    private let header = MJRefreshNormalHeader()
+    // 底部刷新
+    private let footer = MJRefreshAutoNormalFooter()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .white
+
+        // configureCollectionView()
+        configureCollectionView()
+        getModels()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        tableView.frame = view.bounds
-    }
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        view.addSubview(tableView)
-        tableView.delegate = self
-        tableView.dataSource = self
-        handleNotAuthenticated()
-        createMockModels()
     }
     
-    private func createMockModels() {
-        let user = User(username: "user", bio: "", name: (first: "String", last: "String"), birthDate: Date(), gender: .female, counts: UserCount(followers: 0, following: 0, posts: 0), profilePhoto: URL(string: "https://www.google.com")!, joinDate: Date())
-        let post = UserPost(
-            identifier: "",
-            postType: .photo,
-            thumbnailImage: URL(string:"https://www.google.com")!,
-            postURL: URL(string: "https://www.google.com")!,
-            caption: nil,
-            likeCount: [],
-            comments: [],
-            createDate: Date(),
-            taggeUsers: [],
-            owner: user
-        )
-        var comments = [PostComment]()
-        for x in 0..<2 {
-            comments.append(PostComment(
-                identifier: "\(x)",
-                username: "Joe",
-                text: "This is best beat",
-                createDate: Date(),
-                likes: []
-            ))
-        }
-        for _ in 0..<5 {
-            let viewModel = HomeFeedRenderViewType(
-                header: PostRenderViewModel(renderType: .header(provider: user)),
-                post: PostRenderViewModel(renderType: .primaryCount(provide: post)),
-                comments: PostRenderViewModel(renderType: .comments(comments: comments)),
-                actions: PostRenderViewModel(renderType: .actions(provide: ""))
-            )
-            feedRenderModels.append(viewModel)
+    func getModels(page: Int? = 1) {
+        let hub = MBProgressHUD.showAdded(to: view, animated: true)
+        NetworkAPI.imagePostList(params: ["page":page!, "per_page": pageSize]) { (response) in
+            self.collectionView?.mj_header?.endRefreshing()
+            self.collectionView?.mj_footer?.endRefreshing()
+            switch response{
+            case let .success(data):
+                debugPrint(data.hits?.count ?? "0")
+                self.models = self.models + data.hits!
+                hub.hide(animated: true)
+                self.collectionView?.reloadData()
+            case let .failure(error):
+                debugPrint("NetworkAPI.imagePostList" + error.localizedDescription)
+            }
         }
     }
     
-    private func handleNotAuthenticated() {
-        // check auth status
-        if Auth.auth().currentUser == nil {
-            // show login
-            let loginVC = LoginViewController()
-            loginVC.modalPresentationStyle = .fullScreen
-            present(loginVC, animated: true)
-        }
+    func showLoginView() {
+        let vc = ZLLoginViewController()
+        let nvc = UINavigationController(rootViewController: vc)
+        nvc.modalPresentationStyle = .fullScreen
+        present(nvc, animated: true, completion: nil)
+    }
+    
+    func configureCollectionView() {
+        let layout = WaterFlowLayout()
+        layout.minimumLineSpacing = 5.0
+        layout.minimumInteritemSpacing = 5.0
+        layout.delegate = self
+        layout.scrollDirection = .vertical
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        collectionView?.backgroundColor = .white
+        collectionView?.register(PhotosCell.self, forCellWithReuseIdentifier: PhotosCell.identifier)
+        collectionView?.delegate = self
+        collectionView?.dataSource = self
+        self.view.addSubview(collectionView!)
+        
+        // 下拉刷新
+        header.setRefreshingTarget(self, refreshingAction: #selector(getNext))
+        // 现在的版本要用mj_header
+        self.collectionView!.mj_header = header
+        
+        // 上拉刷新
+        footer.setRefreshingTarget(self, refreshingAction: #selector(getNext))
+        self.collectionView!.mj_footer = footer
+    }
+    
+    @objc func getNext() {
+        self.page += 1
+        getModels(page: self.page)
     }
 }
 
 
-extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return feedRenderModels.count * 4
+extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return models.count
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let x = section
-        var model: HomeFeedRenderViewType
-        if x == 0 {
-            model = feedRenderModels[0]
-        } else {
-            let position = x % 4 == 0 ? x / 4 : (x - ( x % 4)) / 4
-            model = feedRenderModels[position]
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotosCell.identifier, for: indexPath) as! PhotosCell
+        let model = models[indexPath.item]
+        cell.setContent(model: model)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard models.count != 0 else {
+            return .zero
         }
         
-        let subSection = x % 4
-        
-        if subSection == 0 {
-            // header
-            return 1
-        } else if subSection == 1 {
-            // post
-            return 1
-        } else if subSection == 2 {
-            // actions
-            return 1
-        } else { //  if subSection == 3
-            // comments
-            let commentsModel = model.comments
-            switch commentsModel.renderType {
-            case .comments(let comments): return comments.count > 2 ? 2 : comments.count
-            case .actions, .header, .primaryCount: return 0
-            }
-        }
+        let model = models[indexPath.item]
+        let width = CGFloat(model.previewWidth!)
+        let height = CGFloat(model.previewHeight!)
+        let itemWidth = (self.view.width - 20) / 3
+        let widthRatio = width / itemWidth
+        let scaleHeight = height * widthRatio
+        return CGSize(width: itemWidth, height: scaleHeight)
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let x = indexPath.section
-        var model: HomeFeedRenderViewType
-        if x == 0 {
-            model = feedRenderModels[0]
-        } else {
-            let position = x % 4 == 0 ? x / 4 : (x - ( x % 4)) / 4
-            model = feedRenderModels[position]
-        }
-        
-        let subSection = x % 4
-        
-        if subSection == 0 {
-            // header
-            let headerModel = model.header
-            
-            switch headerModel.renderType {
-            case .header(let user):
-                let cell = tableView.dequeueReusableCell(
-                    withIdentifier: ZLFeedPostHeaderTableViewCell.identifier,
-                    for: indexPath
-                ) as! ZLFeedPostHeaderTableViewCell
-                cell.configure(with: user)
-                cell.delegate = self
-                return cell
-            case .actions, .comments, .primaryCount: return UITableViewCell()
-            }
-            
-        } else if subSection == 1 {
-            // post
-            switch model.post.renderType {
-            case .primaryCount(let post):
-                let cell = tableView.dequeueReusableCell(
-                    withIdentifier: ZLFeedPostTableViewCell.identifier,
-                    for: indexPath
-                ) as! ZLFeedPostTableViewCell
-                cell.configure(with: post)
-                return cell
-            case .actions, .comments, .header: return UITableViewCell()
-            }
-            
-        } else if subSection == 2 {
-            
-            // actions
-            let actionsModel = model.actions
-            
-            switch actionsModel.renderType {
-            case .actions(let provider):
-                let cell = tableView.dequeueReusableCell(
-                    withIdentifier: ZLFeedPostActionsTableViewCell.identifier,
-                    for: indexPath
-                ) as! ZLFeedPostActionsTableViewCell
-                cell.delegate = self
-                return cell
-            case .primaryCount, .comments, .header: return UITableViewCell()
-            }
-            
-        } else { // if subSection == 3
-            // comments
-            let commentsModel = model.comments
-            switch commentsModel.renderType {
-            case .comments(let comments):
-                let cell = tableView.dequeueReusableCell(
-                    withIdentifier: ZLFeedPostGenaeralTableViewCell.identifier,
-                    for: indexPath
-                ) as! ZLFeedPostGenaeralTableViewCell
-                return cell
-            case .primaryCount, .actions, .header: return UITableViewCell()
-            }
-        }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 4, left: 5, bottom: 4, right: 5)
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let subSection = indexPath.section % 4
-        
-        if subSection == 0 {
-            return CGFloat(70)
-        } else if subSection == 1 {
-            return tableView.width
-        } else if subSection == 2 {
-            return CGFloat(60)
-        } else  { // if subSection == 3
-            return CGFloat(50)
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == 0 { return 0 }
-        return section % 3 == 0 ? 70 : 0
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return UIView()
-    }
-}
-
-extension HomeViewController: ZLFeedPostHeaderTableViewCellDelegate {
-    func didTapMoreButton() {
-        let actionSheet = UIAlertController(title: "Post options",
-                                            message: nil,
-                                            preferredStyle: .actionSheet)
-        actionSheet.addAction(UIAlertAction(title: "Cancel",
-                                            style: .cancel,
-                                            handler: nil))
-        actionSheet.addAction(UIAlertAction(
-            title: "Report Post",
-            style: .destructive,
-            handler: { [weak self] (_) in
-                guard let weakSlef = self else {
-                    return
-                }
-                weakSlef.reportPost()
-            }
-        ))
-        present(actionSheet, animated: true, completion: nil)
-    }
-    
-    func reportPost() {
-        
-    }
-}
-
-extension HomeViewController: ZLFeedPostActionsTableViewCellDelegate {
-    func didTapLikeButton() {
-        
-    }
-    
-    func didTapCommentButton() {
-        
-    }
-    
-    func didTapSendButton() {
-        
-    }
-    
-    
 }
