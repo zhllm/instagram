@@ -22,6 +22,7 @@ target 'instagram' do
   pod 'MBProgressHUD'
   pod 'PromiseKit'
   pod 'MJRefresh'
+  pod 'TABAnimated', '2.5.1'
   
   target 'instagramTests' do
     inherit! :search_paths

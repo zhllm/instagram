@@ -112,6 +112,7 @@ PODS:
   - SDWebImage/Core (5.10.2)
   - SnapKit (5.0.1)
   - SwiftyJSON (5.0.0)
+  - TABAnimated (2.5.1)
 
 DEPENDENCIES:
   - Alamofire (from `https://github.com.cnpmjs.org/Alamofire/Alamofire.git`)
@@ -129,6 +130,7 @@ DEPENDENCIES:
   - SDWebImage (from `https://github.com.cnpmjs.org/SDWebImage/SDWebImage.git`)
   - SnapKit
   - SwiftyJSON
+  - TABAnimated (= 2.5.1)
 
 SPEC REPOS:
   trunk:
@@ -155,6 +157,7 @@ SPEC REPOS:
     - PromisesObjC
     - SnapKit
     - SwiftyJSON
+    - TABAnimated
 
 EXTERNAL SOURCES:
   Alamofire:
@@ -196,7 +199,8 @@ SPEC CHECKSUMS:
   SDWebImage: b969dcfc02c40a5da71eac0b03b8f1a0c794a86f
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
+  TABAnimated: f0bfba5c5c7d279b43cda503d9a5328e7e9891c8
 
-PODFILE CHECKSUM: 40c696b9577d0248c2ced5ab9866d3e8c8400266
+PODFILE CHECKSUM: 536c11e37d2314311e92b42deb00d7af6ef96733
 
 COCOAPODS: 1.9.1

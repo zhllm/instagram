@@ -53,6 +53,9 @@
 		2F9B1334258A2D0A00DC55CC /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F9B1333258A2D0A00DC55CC /* CameraViewController.swift */; };
 		2F9B1339258A2D1F00DC55CC /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F9B1338258A2D1F00DC55CC /* NotificationViewController.swift */; };
 		2F9B133E258A2D3100DC55CC /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F9B133D258A2D3100DC55CC /* ProfileViewController.swift */; };
+		2FA5094325A993D6005BD1E8 /* CModel.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FA5094225A993D6005BD1E8 /* CModel.c */; };
+		2FA5094825A9CC60005BD1E8 /* CustomLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA5094725A9CC60005BD1E8 /* CustomLayout.swift */; };
+		2FA5094D25AAA7D2005BD1E8 /* SegementViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA5094C25AAA7D2005BD1E8 /* SegementViewCell.swift */; };
 		2FFB64CA258A40320067AFB1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2FFB64C9258A40320067AFB1 /* GoogleService-Info.plist */; };
 		2FFB64FA258A46390067AFB1 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFB64EF258A46390067AFB1 /* SettingViewController.swift */; };
 		2FFB64FB258A46390067AFB1 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFB64F0258A46390067AFB1 /* SearchViewController.swift */; };
@@ -153,6 +156,10 @@
 		2F9B1333258A2D0A00DC55CC /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		2F9B1338258A2D1F00DC55CC /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		2F9B133D258A2D3100DC55CC /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		2FA5094125A993D6005BD1E8 /* CModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CModel.h; sourceTree = "<group>"; };
+		2FA5094225A993D6005BD1E8 /* CModel.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CModel.c; sourceTree = "<group>"; };
+		2FA5094725A9CC60005BD1E8 /* CustomLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayout.swift; sourceTree = "<group>"; };
+		2FA5094C25AAA7D2005BD1E8 /* SegementViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegementViewCell.swift; sourceTree = "<group>"; };
 		2FFB64C9258A40320067AFB1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2FFB64EF258A46390067AFB1 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		2FFB64F0258A46390067AFB1 /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -226,6 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				2F64277625A1AAB900B93B22 /* WaterFlowLayout.swift */,
+				2FA5094725A9CC60005BD1E8 /* CustomLayout.swift */,
 			);
 			path = layout;
 			sourceTree = "<group>";
@@ -365,6 +373,8 @@
 				2F1E6537259F4DDB00C59E11 /* BaseModel.swift */,
 				2F1E653C25A05C4300C59E11 /* WeatherModel.swift */,
 				2F64276A25A1826500B93B22 /* PostList.swift */,
+				2FA5094125A993D6005BD1E8 /* CModel.h */,
+				2FA5094225A993D6005BD1E8 /* CModel.c */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -465,6 +475,7 @@
 				2FFB6583258BB8440067AFB1 /* FromTableViewCell.swift */,
 				2FFB6589258BBED80067AFB1 /* PhotoCollectionViewCell.swift */,
 				2F6E50B7258DC0F800312EB1 /* UserFollowTableViewCell.swift */,
+				2FA5094C25AAA7D2005BD1E8 /* SegementViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -585,6 +596,7 @@
 				TargetAttributes = {
 					2F9B12E9258A2BA400DC55CC = {
 						CreatedOnToolsVersion = 12.2;
+						LastSwiftMigration = 1220;
 					};
 					2F9B12FF258A2BA500DC55CC = {
 						CreatedOnToolsVersion = 12.2;
@@ -772,6 +784,7 @@
 				2F64277725A1AAB900B93B22 /* WaterFlowLayout.swift in Sources */,
 				2F8D5D1D259A17EA00977BEF /* HomeViewController2.swift in Sources */,
 				2F9B1339258A2D1F00DC55CC /* NotificationViewController.swift in Sources */,
+				2FA5094D25AAA7D2005BD1E8 /* SegementViewCell.swift in Sources */,
 				2F6E50DC2590674D00312EB1 /* Date+Extensions.swift in Sources */,
 				2FFB64FB258A46390067AFB1 /* SearchViewController.swift in Sources */,
 				2FFB64FA258A46390067AFB1 /* SettingViewController.swift in Sources */,
@@ -797,6 +810,7 @@
 				2FFB6597258BBF590067AFB1 /* ProfileTabsCollectionReusableView.swift in Sources */,
 				2FFB64FC258A46390067AFB1 /* ListViewController.swift in Sources */,
 				2FFB6501258A46390067AFB1 /* PostEditorViewController.swift in Sources */,
+				2FA5094325A993D6005BD1E8 /* CModel.c in Sources */,
 				2FFB6519258A47B40067AFB1 /* AuthManaget.swift in Sources */,
 				2F8D5D36259A281E00977BEF /* UIFont+Extensions.swift in Sources */,
 				2F64277025A1A24E00B93B22 /* PhotosCell.swift in Sources */,
@@ -808,6 +822,7 @@
 				2FFB6584258BB8440067AFB1 /* FromTableViewCell.swift in Sources */,
 				2F1E654225A05F2200C59E11 /* WeatherApi.swift in Sources */,
 				2FFB658A258BBED80067AFB1 /* PhotoCollectionViewCell.swift in Sources */,
+				2FA5094825A9CC60005BD1E8 /* CustomLayout.swift in Sources */,
 				2F8D5D22259A18CA00977BEF /* ZLLoginViewController.swift in Sources */,
 				2F1E6538259F4DDB00C59E11 /* BaseModel.swift in Sources */,
 				2FFB657A258BA6060067AFB1 /* ZLFeedPostActionsTableViewCell.swift in Sources */,
@@ -991,6 +1006,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YP4NL2MAYR;
 				INFOPLIST_FILE = instagram/Info.plist;
@@ -1001,6 +1017,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = beyourself1994.instagram;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = /Users/zhangjie/Desktop/selfCode/instagram/instagram/Bridging.h;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1012,6 +1029,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YP4NL2MAYR;
 				INFOPLIST_FILE = instagram/Info.plist;
