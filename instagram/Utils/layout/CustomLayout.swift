@@ -10,10 +10,13 @@ import UIKit
 class CustomLayout: UICollectionViewFlowLayout {
     static let notifyKey = "CustomLayoutPreper"
     
+    weak var delegate: CameraViewController?
+    
     override func prepare() {
         super.prepare()
         NotificationCenter.default.post(
             name: NSNotification.Name(rawValue: CustomLayout.notifyKey),
             object: nil)
     }
+    
 }

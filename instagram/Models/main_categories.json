@@ -1,0 +1,161 @@
+
+{
+    "categories": [
+        {
+            "level": 1,
+            "label": "京东超市",
+            "id": 1
+        },
+        {
+            "level": 1,
+            "label": "男装",
+            "id": 2
+        },
+        {
+            "level": 1,
+            "label": "奢侈品",
+            "id": 3
+        },
+        {
+            "level": 1,
+            "label": "女装",
+            "id": 4
+        },
+        {
+            "level": 1,
+            "label": "鞋靴",
+            "id": 5
+        },
+        {
+            "level": 1,
+            "label": "内衣配饰",
+            "id": 6
+        },
+        {
+            "level": 1,
+            "label": "箱包",
+            "id": 7
+        },
+        {
+            "level": 1,
+            "label": "美妆护肤",
+            "id": 8
+        },
+        {
+            "level": 1,
+            "label": "个护清洁",
+            "id": 9
+        },
+        {
+            "level": 1,
+            "label": "钟表珠宝",
+            "id": 10
+        },
+        {
+            "level": 1,
+            "label": "手机",
+            "id": 10
+        },
+        {
+            "level": 1,
+            "label": "数码",
+            "id": 10
+        },
+        {
+            "level": 1,
+            "label": "电脑办公",
+            "id": 10
+        },
+        {
+            "level": 1,
+            "label": "家电",
+            "id": 11
+        },
+        {
+            "level": 1,
+            "label": "生鲜",
+            "id": 12
+        },
+        {
+            "level": 1,
+            "label": "食品酒饮",
+            "id": 13
+        },
+        {
+            "level": 1,
+            "label": "母婴童装",
+            "id": 14
+        },
+        {
+            "level": 1,
+            "label": "玩具乐器",
+            "id": 14
+        },
+        {
+            "level": 1,
+            "label": "医药保健",
+            "id": 14
+        },
+        {
+            "level": 1,
+            "label": "计生情趣",
+            "id": 15
+        },
+        {
+            "level": 1,
+            "label": "运动户外",
+            "id": 16
+        },
+        {
+            "level": 1,
+            "label": "汽摩生活",
+            "id": 17
+        },
+        {
+            "level": 1,
+            "label": "家具厨具",
+            "id": 18
+        },
+        {
+            "level": 1,
+            "label": "家具家装",
+            "id": 19
+        },
+        {
+            "level": 1,
+            "label": "宠物鲜花",
+            "id": 20
+        },
+        {
+            "level": 1,
+            "label": "生活旅行",
+            "id": 21
+        },
+        {
+            "level": 1,
+            "label": "图书文娱",
+            "id": 22
+        },
+        {
+            "level": 1,
+            "label": "二手商品",
+            "id": 23
+        },
+        {
+            "level": 1,
+            "label": "京东服务",
+            "id": 24
+        },
+        {
+            "level": 1,
+            "label": "拍卖",
+            "id": 25
+        },
+        {
+            "level": 1,
+            "label": "工业品",
+            "id": 26
+        }
+    ]
+    
+}

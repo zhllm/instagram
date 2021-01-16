@@ -56,6 +56,7 @@
 		2FA5094325A993D6005BD1E8 /* CModel.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FA5094225A993D6005BD1E8 /* CModel.c */; };
 		2FA5094825A9CC60005BD1E8 /* CustomLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA5094725A9CC60005BD1E8 /* CustomLayout.swift */; };
 		2FA5094D25AAA7D2005BD1E8 /* SegementViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA5094C25AAA7D2005BD1E8 /* SegementViewCell.swift */; };
+		2FA5095225B08D94005BD1E8 /* main_categories.json in Resources */ = {isa = PBXBuildFile; fileRef = 2FA5095125B08D94005BD1E8 /* main_categories.json */; };
 		2FFB64CA258A40320067AFB1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2FFB64C9258A40320067AFB1 /* GoogleService-Info.plist */; };
 		2FFB64FA258A46390067AFB1 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFB64EF258A46390067AFB1 /* SettingViewController.swift */; };
 		2FFB64FB258A46390067AFB1 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFB64F0258A46390067AFB1 /* SearchViewController.swift */; };
@@ -160,6 +161,7 @@
 		2FA5094225A993D6005BD1E8 /* CModel.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CModel.c; sourceTree = "<group>"; };
 		2FA5094725A9CC60005BD1E8 /* CustomLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayout.swift; sourceTree = "<group>"; };
 		2FA5094C25AAA7D2005BD1E8 /* SegementViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegementViewCell.swift; sourceTree = "<group>"; };
+		2FA5095125B08D94005BD1E8 /* main_categories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = main_categories.json; sourceTree = "<group>"; };
 		2FFB64C9258A40320067AFB1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2FFB64EF258A46390067AFB1 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		2FFB64F0258A46390067AFB1 /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -375,6 +377,7 @@
 				2F64276A25A1826500B93B22 /* PostList.swift */,
 				2FA5094125A993D6005BD1E8 /* CModel.h */,
 				2FA5094225A993D6005BD1E8 /* CModel.c */,
+				2FA5095125B08D94005BD1E8 /* main_categories.json */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -640,6 +643,7 @@
 				2F8D5D45259A311800977BEF /* Montserrat-SemiBold.ttf in Resources */,
 				2F8D5D3B259A2FC000977BEF /* iconfont.ttf in Resources */,
 				2F8D5D40259A30FC00977BEF /* Montserrat-Medium.ttf in Resources */,
+				2FA5095225B08D94005BD1E8 /* main_categories.json in Resources */,
 				2F9B12F5258A2BA400DC55CC /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

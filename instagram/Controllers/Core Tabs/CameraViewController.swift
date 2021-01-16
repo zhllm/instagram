@@ -8,12 +8,36 @@ import AVFoundation
 import UIKit
 import Foundation
 import MJRefresh
+import ObjectMapper
 
-public struct CategoryLevel1 {
+public struct CategoryLevel1: Mappable {
+    public init?(map: Map) {
+        label = ""
+        id = 0
+        level = 1
+    }
+    
+    public mutating func mapping(map: Map) {
+        self.label <- map["label"]
+        self.id <- map["id"]
+        self.level <- map["level"]
+    }
+    
     var label: String
     var id: Int
     var level: Int
-    var children: [CategoryLevel1]
+}
+
+public struct MainCategories: Mappable {
+    public init?(map: Map) {
+        categories = [CategoryLevel1]()
+    }
+    
+    public mutating func mapping(map: Map) {
+        categories <- map["categories"]
+    }
+    
+    var categories: [CategoryLevel1]
 }
 
 class CategoryLevel {
@@ -35,6 +59,9 @@ class CameraViewController: UIViewController {
     public var collectionView: UICollectionView!
     private var scrollView: CustomUIScrollView!
     private weak var layout: UICollectionViewFlowLayout?
+    
+    private var models: [Post] = []
+    
     private var leftTableView: UITableView = {
         let table = UITableView()
         return table
@@ -51,14 +78,49 @@ class CameraViewController: UIViewController {
     
     private var categories = [CategoryLevel]()
     
+    private var mainCategory: MainCategories?
+    
     private var maxLevel = 1
     
+    private var currentFirstSection = 0
+    
+    @objc func getModels() {
+        NetworkAPI.imagePostList(params: ["page":1, "per_page": 200]) { (response) in
+            switch response{
+            case let .success(data):
+                self.models = self.models + data.hits!
+                self.generateModel()
+            case let .failure(error):
+                debugPrint("NetworkAPI.imagePostList" + error.localizedDescription)
+            }
+        }
+    }
+    
     @objc func generateModel() {
+        let path = Bundle.main.path(forResource: "main_categories", ofType: "json")
+        let url = URL(fileURLWithPath: path!)
+        do {
+            let jsonString = try String(contentsOf: url, encoding: .utf8)
+            self.mainCategory = MainCategories(JSONString: String(jsonString))
+        } catch let error {
+            print(error)
+        }
         repeats(collection: &categories, level: 1)
         currentIndex = 0
         leftTableView.reloadData()
-        segmentTableView.reloadData()
         collectionView.reloadData()
+        segmentTableView.reloadData()
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) { [weak self] in
+            guard self != nil else { return }
+            let indexPath = IndexPath(item: 0, section: 0)
+            self!.segmentTableView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+            self?.leftTableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+            guard let cell = self!.segmentTableView.cellForItem(at: indexPath) as? SegementViewCell else {
+                print("cell is nil")
+                return
+            }
+            cell.selectedCell()
+        }
     }
     
     private func repeats(collection: inout [CategoryLevel], level: Int) {
@@ -72,7 +134,7 @@ class CameraViewController: UIViewController {
     }
     
     func startTimer() {
-       Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(generateModel), userInfo: nil, repeats: false)
+       Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(getModels), userInfo: nil, repeats: false)
     }
     
     
@@ -83,33 +145,46 @@ class CameraViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = .secondarySystemBackground
         configureScrollView()
         configureCollectionView()
         configureTableView()
         configureSegmentTableView()
-        // generateModel
         startTimer()
         NotificationCenter.default.addObserver(self, selector: #selector(configContentSize), name: NSNotification.Name(rawValue: CustomLayout.notifyKey), object: nil)
     }
     
     func configureSegmentTableView() {
-        let bounds = CGRect(
-            x: headerView.left,
-            y: headerView.top + headerView.height - 28,
-            width: headerView.width,
-            height: 28)
+        let backView = UIView(frame: CGRect(
+                                x: headerView.left,
+                                y: headerView.top + headerView.height - 40,
+                                width: headerView.width,
+                                height: 40))
+        backView.backgroundColor = .white
         // segmentTableView =
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 2
+        layout.minimumLineSpacing = 8
         layout.scrollDirection = .horizontal
-        segmentTableView = UICollectionView(frame: bounds, collectionViewLayout: layout)
+        headerView.addSubview(backView)
+        let imageHeader = UIImageView()
+        imageHeader.sd_setImage(with: URL(string: "https://cdn.pixabay.com/photo/2015/12/22/14/37/sandwiches-1104188_1280.jpg"), completed: nil)
+        headerView.addSubview(imageHeader)
+        imageHeader.frame = CGRect(x: 10, y: 10, width: headerView.width - 20, height: 100)
+        imageHeader.contentMode = .scaleAspectFill
+        imageHeader.layer.cornerRadius = 4
+        imageHeader.layer.masksToBounds = true
+        segmentTableView = UICollectionView(frame: CGRect(
+                                                x: 0,
+                                                y: 8,
+                                                width: backView.width,
+                                                height: 24), collectionViewLayout: layout)
         segmentTableView.dataSource = self
         segmentTableView.delegate = self
         segmentTableView.register(SegementViewCell.self, forCellWithReuseIdentifier: SegementViewCell.identifier)
         segmentTableView.backgroundColor = .white
         segmentTableView.showsHorizontalScrollIndicator = false
-        headerView.addSubview(segmentTableView)
+        backView.addSubview(segmentTableView)
     }
     
     /// configureTableView
@@ -118,7 +193,7 @@ class CameraViewController: UIViewController {
         view.addSubview(views)
         views.frame = CGRect(
             x: 0,
-            y: view.top + 4,
+            y: view.top + ZL_naviBarHeight + 6,
             width: view.width / 4,
             height: view.height
         )
@@ -126,6 +201,8 @@ class CameraViewController: UIViewController {
         leftTableView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
+        leftTableView.separatorInset = .zero
+        leftTableView.separatorColor = .clear
         leftTableView.delegate = self
         leftTableView.dataSource = self
         leftTableView.separatorStyle = .none
@@ -139,7 +216,7 @@ class CameraViewController: UIViewController {
         view.addSubview(views)
         views.frame = CGRect(
             x: view.width / 4,
-            y: ZL_naviBarHeight + 16,
+            y: ZL_naviBarHeight + 6,
             width: view.width / 4 * 3,
             height: view.height - ZL_bottomTabBarHeight - headerView.height
         )
@@ -161,7 +238,7 @@ class CameraViewController: UIViewController {
                                   y: 0,
                                   width: scrollView.width,
                                   height: 160)
-        headerView.backgroundColor = .green
+        headerView.backgroundColor = .white
         view.addSubview(scrollView)
         scrollView.isScrollEnabled = true
         scrollView.delegate = self
@@ -171,6 +248,7 @@ class CameraViewController: UIViewController {
     private func configureCollectionView() {
         let layout = CustomLayout()
         self.layout = layout
+        layout.delegate = self
         layout.minimumInteritemSpacing = 10
         layout.minimumLineSpacing = 10
         let size = (view.width - 24) / 3
@@ -182,7 +260,7 @@ class CameraViewController: UIViewController {
                 x: 0,
                 y: headerView.bottom,
                 width: scrollView.width,
-                height: scrollView.height - ZL_bottomTabBarHeight - 100
+                height: scrollView.height - 100
             ),
             collectionViewLayout: layout
         )
@@ -224,40 +302,96 @@ class CameraViewController: UIViewController {
             height: self.layout!.collectionViewContentSize.height + headerView.height//  + headerView.height + 60
         )
     }
+    
+    func headerCollectionViewScroll(to sectionIndex: Int)  {
+        let indexPath = IndexPath(item: sectionIndex, section: 0)
+        segmentTableView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        guard let cell = segmentTableView.cellForItem(at: indexPath) as? SegementViewCell else {
+            return
+        }
+        cell.selectedCell()
+    }
 
 }
  
 // MARK: - UITableViewDelegate,UITableViewDataSource
 extension CameraViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 40
+        return 60
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return self.mainCategory?.categories.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
+        if self.mainCategory == nil { return cell }
         for view in cell.contentView.subviews {
             view.removeFromSuperview()
         }
-        let label = UILabel(frame: cell.bounds)
-        label.text = categories[indexPath.row].label
+        let y = (cell.height - 22) / 2
+        let label = UILabel(frame: CGRect(x: 0, y: y, width: cell.width, height: 22))
+        
+        label.text = self.mainCategory!.categories[indexPath.row].label
         label.textAlignment = .center
         label.textColor = .secondaryLabel
         cell.contentView.addSubview(label)
-        cell.backgroundColor = .secondarySystemBackground
+        cell.contentView.layer.borderWidth = 0
+        cell.backgroundColor = .white
+        cell.contentView.backgroundColor = .secondarySystemBackground
+        cell.selectedBackgroundView = UIView(frame: cell.bounds)
+        cell.selectedBackgroundView?.backgroundColor = .clear
+        
+        if currentIndex != nil && currentIndex == indexPath.row {
+            cell.contentView.backgroundColor = .white
+            
+            if let cell = tableView.cellForRow(at: IndexPath(row: indexPath.row - 1, section: 0)) {
+                setCellCorner(cell: cell, corners: [[.bottomRight]])
+            }
+            if let cell = tableView.cellForRow(at: IndexPath(row: indexPath.row + 1, section: 0)) {
+                setCellCorner(cell: cell, corners: [[.topRight]])
+            }
+        }
         return cell
     }
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath)
-        cell?.selectedBackgroundView = UIView(frame: cell?.bounds ?? .zero)
-        cell?.selectedBackgroundView?.backgroundColor = .white
+        if let cell = tableView.cellForRow(at: indexPath) {
+            cell.contentView.backgroundColor = .white
+        }
+        
+        if let cell = tableView.cellForRow(at: IndexPath(row: indexPath.row - 1, section: 0)) {
+            setCellCorner(cell: cell, corners: [[.bottomRight]])
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: indexPath.row + 1, section: 0)) {
+            setCellCorner(cell: cell, corners: [[.topRight]])
+        }
         currentIndex = indexPath.row
         collectionView.reloadData()
+    }
+    
+    func setCellCorner(cell: UITableViewCell, corners: UIRectCorner) {
+        let maskPath = UIBezierPath(roundedRect: cell.contentView.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: 16, height: 16))
+        let maskLayer = CAShapeLayer()
+        maskLayer.frame = view.bounds
+        maskLayer.path = maskPath.cgPath
+        maskLayer.shouldRasterize = true
+        maskLayer.rasterizationScale = UIScreen.main.scale
+        cell.contentView.layer.mask = maskLayer
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) {
+            cell.contentView.backgroundColor = .secondarySystemBackground
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: indexPath.row - 1, section: 0)) {
+            setCellCorner(cell: cell, corners: [[]])
+        }
+        if let cell = tableView.cellForRow(at: IndexPath(row: indexPath.row + 1, section: 0)) {
+            setCellCorner(cell: cell, corners: [[]])
+        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -289,32 +423,46 @@ extension CameraViewController: UICollectionViewDelegateFlowLayout, UICollection
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == segmentTableView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SegementViewCell.identifier, for: indexPath) as! SegementViewCell
-            cell.setNormalContent(text: categories[indexPath.item].label)
+            
+            cell.setNormalContent(text: self.mainCategory?.categories[indexPath.item].label ?? "")
             return cell
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell", for: indexPath)
         for view in cell.contentView.subviews {
             view.removeFromSuperview()
         }
-        let imageView = UIImageView()
-        cell.contentView.addSubview(imageView)
-        cell.contentView.backgroundColor = .secondarySystemBackground
+        
         let padding: CGFloat = 10
         let size = cell.width - 2 * padding
+        let backView = UIView(frame: CGRect(
+            x: 0, y: 0, width: cell.width , height: cell.width
+        ))
+        
+        let imageView = UIImageView()
+        cell.contentView.addSubview(backView)
+        // cell.contentView.backgroundColor = .secondarySystemBackground
+        backView.addSubview(imageView)
+        backView.backgroundColor = .secondarySystemBackground
         imageView.frame = CGRect(
             x: padding, y: padding, width: size, height: size
         )
         imageView.backgroundColor = .lightGray
         imageView.layer.cornerRadius = imageView.width / 2
         imageView.layer.masksToBounds = true
-        imageView.contentMode = .scaleAspectFit
-        imageView.sd_setImage(with: URL(string: "https://cdn.pixabay.com/photo/2018/02/21/08/40/woman-3169726_1280.jpg"), completed: nil)
+        imageView.contentMode = .scaleAspectFill
+        imageView.sd_setImage(with: URL(string: self.models[indexPath.item].previewURL!), completed: nil)
         let label = UILabel(frame: CGRect(
                                 x: padding,
-                                y: imageView.bottom,
+                                y: imageView.bottom + 16,
                                 width: size,
                                 height: 30))
-        label.text = "\(categories[currentIndex!].children[indexPath.item].level)\(categories[currentIndex!].children[indexPath.item].label)"
+        if currentIndex! <= categories.count - 1 {
+            label.text =
+                "\(categories[currentIndex!].children[indexPath.item].level)\(categories[currentIndex!].children[indexPath.item].label)"
+        } else {
+            label.text = "nil"
+        }
+        
         cell.contentView.addSubview(label)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
@@ -354,20 +502,55 @@ extension CameraViewController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if collectionView == self.segmentTableView {
+            return UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        }
         return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == segmentTableView {
-            return CGSize(width: 100, height: self.segmentTableView.height )
+            guard let labelCont = self.mainCategory?.categories[indexPath.item].label.count else {
+                return CGSize(width: 100, height: self.segmentTableView.height)
+            }
+            return CGSize(width: CGFloat(labelCont * 16 + 14), height: self.segmentTableView.height)
         }
         let size = (self.collectionView.width - 40) / 3
         return CGSize(width: size, height: size + 30)
     }
+    
+    func findTopSecion(set: NSMutableIndexSet) -> Int? {
+        var currentFirstSection = 100
+        for index in set {
+            currentFirstSection = min(currentFirstSection, index)
+        }
+        let maxCount = self.collectionView.numberOfSections
+        
+        if currentFirstSection > maxCount {
+            return nil
+        }
+        let count = self.collectionView.numberOfItems(inSection: currentFirstSection)
+        let index = IndexPath(item: count - 1, section: currentFirstSection)
+        let attr = self.layout?.layoutAttributesForItem(at: index)
+        guard attr != nil else {
+            return nil
+        }
+        if attr!.frame.origin.y + attr!.frame.size.height < self.collectionView.contentOffset.y {
+            set.remove(currentFirstSection)
+            return findTopSecion(set: set)
+        }
+        return currentFirstSection
+    }
+
 }
 
 // MARK: - UIScrollViewDelegate
 extension CameraViewController: UIScrollViewDelegate {
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView == leftTableView {
             return
@@ -377,6 +560,38 @@ extension CameraViewController: UIScrollViewDelegate {
             return
         }
         
+        if scrollView == self.collectionView {
+            let set = NSMutableIndexSet()
+            for cell in collectionView.visibleCells {
+                let indexPath = self.collectionView.indexPath(for: cell)
+                if indexPath == nil {
+                    continue
+                }
+                set.add(indexPath!.section)
+            }
+            guard let currentFirstSection = findTopSecion(set: set) else {
+                return
+            }
+            
+            print("currentFirstSection \(currentFirstSection)")
+            if self.currentFirstSection != currentFirstSection {
+                let index = IndexPath(item: currentFirstSection, section: 0)
+                self.segmentTableView.selectItem(at: index, animated: true, scrollPosition: .centeredHorizontally)
+                let preIndexPath = IndexPath(item: self.currentFirstSection, section: 0)
+                let preCell = self.segmentTableView.cellForItem(at: preIndexPath) as? SegementViewCell
+                self.segmentTableView.deselectItem(at: preIndexPath, animated: true)
+                if preCell != nil {
+                    preCell?.deselectedCell()
+                }
+                self.currentFirstSection = currentFirstSection
+                guard let cell = self.segmentTableView.cellForItem(at: index) as? SegementViewCell else {
+                    print("cell is nil")
+                    return
+                }
+                cell.selectedCell()
+            }
+        }
+        
         if scrollView == self.scrollView {
             if !scrollViewCanScroll {
                 if self.collectionView.contentSize.height - self.collectionView.contentOffset.y <= self.view.height {
@@ -384,15 +599,14 @@ extension CameraViewController: UIScrollViewDelegate {
                     // 但是scrollView 的offset是被锁定到 y = 100 处，所以导致collectionView滑动到底部失去了回弹效果
                     self.scrollView.isScrollEnabled = false
                 }
-                scrollView.contentOffset.y = 100
+                scrollView.contentOffset.y = 120
                 collectionCanScroll = true
-            } else if scrollView.contentOffset.y >= 100 {
-                scrollView.contentOffset.y = 100
+            } else if scrollView.contentOffset.y >= 120 {
+                scrollView.contentOffset.y = 120
                 scrollViewCanScroll = false
                 collectionCanScroll = true
             }
         } else  {
-            let firstCell = collectionView.visibleCells.last
             if collectionView.contentOffset.y < self.view.height {
                 self.scrollView.isScrollEnabled = true
             }
@@ -403,10 +617,6 @@ extension CameraViewController: UIScrollViewDelegate {
                 scrollViewCanScroll = true
             }
         }
-        print("scrollView cell y", self.scrollView.contentSize.height)
-        print("collectionView cell y",  self.collectionView.contentSize.height)
-        print("scrollView cell y", self.scrollView.contentOffset.y)
-        print("collectionView cell y \n \n \n \n \n ",  self.collectionView.contentOffset.y)
         
         if scrollViewCanScroll {
             self.scrollView.showsVerticalScrollIndicator = true
