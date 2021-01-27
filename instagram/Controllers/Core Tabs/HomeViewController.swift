@@ -11,112 +11,184 @@ import MBProgressHUD
 import MJRefresh
 
 class HomeViewController: UIViewController {
+    var scrollView: CustomUIScrollView!
+    var headerView: UIView!
     
-    private var collectionView: UICollectionView?
-    private var models: [Post] = []
-    private var page: Int = 1
-    private var pageSize: Int = 20
+    private var bar: CustomNavBar?
     
-    // 顶部刷新
-    private let header = MJRefreshNormalHeader()
-    // 底部刷新
-    private let footer = MJRefreshAutoNormalFooter()
-
+    var searchController = UISearchController(searchResultsController: SearchResultViewController())
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-
-        // configureCollectionView()
-        configureCollectionView()
-        getModels()
+        self.title = "main "
+        configScrollView()
+        // self.edgesForExtendedLayout = .all
+        self.extendedLayoutIncludesOpaqueBars = true
+        scrollView.automaticallyAdjustsScrollIndicatorInsets = false
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        configNav()
     }
     
-    func getModels(page: Int? = 1) {
-        let hub = MBProgressHUD.showAdded(to: view, animated: true)
-        NetworkAPI.imagePostList(params: ["page":page!, "per_page": pageSize]) { (response) in
-            self.collectionView?.mj_header?.endRefreshing()
-            self.collectionView?.mj_footer?.endRefreshing()
-            switch response{
-            case let .success(data):
-                debugPrint(data.hits?.count ?? "0")
-                self.models = self.models + data.hits!
-                hub.hide(animated: true)
-                self.collectionView?.reloadData()
-            case let .failure(error):
-                debugPrint("NetworkAPI.imagePostList" + error.localizedDescription)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationItem.searchController = nil
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController!.navigationBar.setNeedsLayout()
+        self.navigationController!.navigationBar.layoutIfNeeded()
+    }
+    
+    func configNav() {
+        let bar = CustomNavBar()
+        bar.vcDelegate = self
+        navigationItem.largeTitleDisplayMode = .automatic
+        navigationItem.title = "hello"
+        // self.navigationController?.setValue(bar, forKey: "navigationBar")
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.setBackgroundImage(imageWithColor(color: UIColor(red: 1, green: 1, blue: 1, alpha: 1)), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search Candies"
+        searchController.definesPresentationContext = true
+        searchController.delegate = self
+        navigationItem.searchController = searchController
+        // navigationItem.titleView = searchController.searchBar
+        definesPresentationContext = true
+//        searchController.searchBar.frame = CGRect(x: 0,
+//                                                  y: 108,
+//                                                  width: scrollView.width,
+//                                                  height: 40)
+    }
+    
+    
+    func configScrollView() {
+        self.scrollView = CustomUIScrollView()
+        scrollView.delegate = self
+        self.view.addSubview(scrollView)
+        self.headerView = UIView()
+        scrollView.frame = CGRect(x: 0, y: 0, width: view.width, height: view.height)
+        scrollView.addSubview(headerView)
+        
+        print("scrollView.top \(scrollView.top)")
+        headerView.frame = CGRect(x: 0, y: -128, width: scrollView.width, height: 200 + ZL_naviBarHeight)
+        headerView.backgroundColor = .red
+        
+        scrollView.backgroundColor = .green
+        scrollView.contentSize = CGSize(width: view.width, height: view.height * 2)
+        scrollView.showsVerticalScrollIndicator = false
+    }
+    
+    func imageWithColor(color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()
+        context!.setFillColor(color.cgColor)
+        context!.fill(rect);
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
+    }
+    
+}
+
+
+extension HomeViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        let reOffset = scrollView.contentOffset.y //  + ZL_naviBarHeight
+        // var alpha = reOffset / ((ZLMainScreenHeight - ZL_naviBarHeight) * 0.2)
+        var alpha = reOffset / 60
+        print(scrollView.contentOffset.y)
+        if alpha > 0 {
+            alpha = 1
+        } else {
+            alpha += 1
+        }
+        // self.navigationController?.navigationBar.subviews[0].alpha = alpha
+        let image = imageWithColor(color: UIColor(red: 0.227, green: 0.753, blue: 0.757, alpha: alpha))
+        
+        // self.navigationController?.navigationBar.setBackgroundImage(image, for: .default)
+        
+        if scrollView.contentOffset.y < 0 {
+            
+        }
+    }
+}
+
+extension HomeViewController: UISearchResultsUpdating, UISearchControllerDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+        
+    }
+    
+    func willPresentSearchController(_ searchController: UISearchController) {
+        let height: CGFloat = 44
+        let bar = self.navigationController!.navigationBar
+        bar.frame = CGRect(x: bar.frame.origin.x, y:  44, width: bar.frame.size.width, height: height)
+        bar.setTitleVerticalPositionAdjustment(10, for: UIBarMetrics.default)
+        for subview in bar.subviews {
+            var stringFromClass = NSStringFromClass(subview.classForCoder)
+            if stringFromClass.contains("BarBackground") {
+                subview.frame = CGRect(x: 0, y: 44, width: bar.frame.width, height: height)
+                subview.backgroundColor = .white
+            }
+            stringFromClass = NSStringFromClass(subview.classForCoder)
+            if stringFromClass.contains("BarContent") {
+                subview.frame = CGRect(x: subview.frame.origin.x, y: 44, width: subview.frame.width, height: 44)
+            }
+            
+            for subview2 in bar.subviews {
+                if NSStringFromClass(subview2.classForCoder).contains("SearchBar") {
+                    subview2.frame = CGRect(
+                        x: subview.frame.origin.x,
+                        y: 44,
+                        width: bar.width,
+                        height: 50.5
+                    )
+                    bar.bringSubviewToFront(subview2)
+                    break
+                }
             }
         }
     }
     
-    func showLoginView() {
-        let vc = ZLLoginViewController()
-        let nvc = UINavigationController(rootViewController: vc)
-        nvc.modalPresentationStyle = .fullScreen
-        present(nvc, animated: true, completion: nil)
-    }
-    
-    func configureCollectionView() {
-        let layout = WaterFlowLayout()
-        layout.minimumLineSpacing = 5.0
-        layout.minimumInteritemSpacing = 5.0
-        layout.delegate = self
-        layout.scrollDirection = .vertical
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
-        collectionView?.backgroundColor = .white
-        collectionView?.register(PhotosCell.self, forCellWithReuseIdentifier: PhotosCell.identifier)
-        collectionView?.delegate = self
-        collectionView?.dataSource = self
-        self.view.addSubview(collectionView!)
+    func willDismissSearchController(_ searchController: UISearchController) {
+        let height = NavigationBarHeightIncrease
+        let bar = self.navigationController!.navigationBar
         
-        // 下拉刷新
-        header.setRefreshingTarget(self, refreshingAction: #selector(getNext))
-        // 现在的版本要用mj_header
-        self.collectionView!.mj_header = header
+        bar.frame = CGRect(x: bar.frame.origin.x, y:  0, width: bar.frame.size.width, height: height)
         
-        // 上拉刷新
-        footer.setRefreshingTarget(self, refreshingAction: #selector(getNext))
-        self.collectionView!.mj_footer = footer
-    }
-    
-    @objc func getNext() {
-        self.page += 1
-        getModels(page: self.page)
-    }
-}
-
-
-extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return models.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotosCell.identifier, for: indexPath) as! PhotosCell
-        let model = models[indexPath.item]
-        cell.setContent(model: model)
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard models.count != 0 else {
-            return .zero
+        bar.setTitleVerticalPositionAdjustment(10, for: UIBarMetrics.default)
+        
+        for subview in bar.subviews {
+            var stringFromClass = NSStringFromClass(subview.classForCoder)
+            if stringFromClass.contains("BarBackground") {
+                subview.frame = CGRect(x: 0, y: 0, width: bar.frame.width, height: height)
+                subview.backgroundColor = .white
+            }
+            stringFromClass = NSStringFromClass(subview.classForCoder)
+            if stringFromClass.contains("BarContent") {
+                subview.frame = CGRect(x: subview.frame.origin.x, y: 44, width: subview.frame.width, height: 84)
+            }
+            
+            for subview2 in bar.subviews {
+                if NSStringFromClass(subview2.classForCoder).contains("SearchBar") {
+                    subview2.frame = CGRect(
+                        x: subview.frame.origin.x,
+                        y: 84,
+                        width: bar.width,
+                        height: 50.5
+                    )
+                    bar.bringSubviewToFront(subview2)
+                    break
+                }
+            }
         }
-        
-        let model = models[indexPath.item]
-        let width = CGFloat(model.previewWidth!)
-        let height = CGFloat(model.previewHeight!)
-        let itemWidth = (self.view.width - 20) / 3
-        let widthRatio = width / itemWidth
-        let scaleHeight = height * widthRatio
-        return CGSize(width: itemWidth, height: scaleHeight)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 4, left: 5, bottom: 4, right: 5)
-    }
 }
+
+

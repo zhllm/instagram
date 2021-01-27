@@ -9,6 +9,7 @@ import UIKit
 import Foundation
 import MJRefresh
 import ObjectMapper
+import SnapKit
 
 public struct CategoryLevel1: Mappable {
     public init?(map: Map) {
@@ -80,6 +81,11 @@ class CameraViewController: UIViewController {
     
     private var mainCategory: MainCategories?
     
+    private lazy var searchController: UISearchController = {
+        let searchVc = UISearchController(searchResultsController: nil)
+        return searchVc
+    }()
+    
     private var maxLevel = 1
     
     private var currentFirstSection = 0
@@ -142,9 +148,30 @@ class CameraViewController: UIViewController {
         let view = UIView()
         return view
     }()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // extendedLayoutIncludesOpaqueBars = true
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search Candies21212"
+        // self.navigationController?.navigationBar.isTranslucent = true
+        definesPresentationContext = true
+        navigationItem.searchController = searchController
+        // searchController.definesPresentationContext = false
+        //searchController.hidesNavigationBarDuringPresentation = false
+        // searchController.searchBar.frame = CGRect(x: 0, y: 0, width: view.width, height: 44)
+//        let titleView = UIView(frame: CGRect(x: 70, y: 0, width: 300, height: 32))
+//        navigationItem.titleView = titleView
+//        titleView.addSubview(searchController.searchBar)
+//        searchController.searchBar.snp.makeConstraints { (make) in
+//            make.edges.equalToSuperview()
+//        }
+        
         
         view.backgroundColor = .secondarySystemBackground
         configureScrollView()
@@ -153,6 +180,10 @@ class CameraViewController: UIViewController {
         configureSegmentTableView()
         startTimer()
         NotificationCenter.default.addObserver(self, selector: #selector(configContentSize), name: NSNotification.Name(rawValue: CustomLayout.notifyKey), object: nil)
+        
+        guard let bar = self.navigationController?.navigationBar as? CustomNavBar else {
+            return
+        }
     }
     
     func configureSegmentTableView() {
@@ -625,5 +656,12 @@ extension CameraViewController: UIScrollViewDelegate {
             self.scrollView.showsVerticalScrollIndicator = false
             collectionView.showsVerticalScrollIndicator = true
         }
+    }
+}
+
+
+extension CameraViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        
     }
 }

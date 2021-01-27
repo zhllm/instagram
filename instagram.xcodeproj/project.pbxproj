@@ -57,6 +57,7 @@
 		2FA5094825A9CC60005BD1E8 /* CustomLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA5094725A9CC60005BD1E8 /* CustomLayout.swift */; };
 		2FA5094D25AAA7D2005BD1E8 /* SegementViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA5094C25AAA7D2005BD1E8 /* SegementViewCell.swift */; };
 		2FA5095225B08D94005BD1E8 /* main_categories.json in Resources */ = {isa = PBXBuildFile; fileRef = 2FA5095125B08D94005BD1E8 /* main_categories.json */; };
+		2FA5095725B462C6005BD1E8 /* CustomNavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA5095625B462C6005BD1E8 /* CustomNavBar.swift */; };
 		2FFB64CA258A40320067AFB1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2FFB64C9258A40320067AFB1 /* GoogleService-Info.plist */; };
 		2FFB64FA258A46390067AFB1 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFB64EF258A46390067AFB1 /* SettingViewController.swift */; };
 		2FFB64FB258A46390067AFB1 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFB64F0258A46390067AFB1 /* SearchViewController.swift */; };
@@ -162,6 +163,7 @@
 		2FA5094725A9CC60005BD1E8 /* CustomLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayout.swift; sourceTree = "<group>"; };
 		2FA5094C25AAA7D2005BD1E8 /* SegementViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegementViewCell.swift; sourceTree = "<group>"; };
 		2FA5095125B08D94005BD1E8 /* main_categories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = main_categories.json; sourceTree = "<group>"; };
+		2FA5095625B462C6005BD1E8 /* CustomNavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavBar.swift; sourceTree = "<group>"; };
 		2FFB64C9258A40320067AFB1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2FFB64EF258A46390067AFB1 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		2FFB64F0258A46390067AFB1 /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -364,6 +366,7 @@
 				2F9B1327258A2C6000DC55CC /* Storybord */,
 				2F9B12F6258A2BA500DC55CC /* Assets.xcassets */,
 				2F6E50BC258E354C00312EB1 /* NoNotificationView.swift */,
+				2FA5095625B462C6005BD1E8 /* CustomNavBar.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -820,6 +823,7 @@
 				2F64277025A1A24E00B93B22 /* PhotosCell.swift in Sources */,
 				2F6E50D025905D8500312EB1 /* HomeViewControllerBackup.swift in Sources */,
 				2FFB6502258A46390067AFB1 /* LoginViewController.swift in Sources */,
+				2FA5095725B462C6005BD1E8 /* CustomNavBar.swift in Sources */,
 				2F6E50B3258CDCBD00312EB1 /* Models.swift in Sources */,
 				2FFB64FE258A46390067AFB1 /* SearchResultViewController.swift in Sources */,
 				2F9B12F0258A2BA400DC55CC /* SceneDelegate.swift in Sources */,
